@@ -47,16 +47,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="drawShape.cs" />
-    <Compile Include="F:\Year_3\Advanced_Software_engineering\Assignment\Assignment.cs">
+    <Compile Include="..\..\Assignment.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="F:\Year_3\Advanced_Software_engineering\Assignment\Assignment.Designer.cs">
+    <Compile Include="..\..\Assignment.Designer.cs">
       <DependentUpon>Assignment.cs</DependentUpon>
     </Compile>
     <Compile Include="location.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="F:\Year_3\Advanced_Software_engineering\Assignment\Assignment.resx">
+    <EmbeddedResource Include="..\..\Assignment.resx">
       <DependentUpon>Assignment.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
