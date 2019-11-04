@@ -11,17 +11,17 @@ namespace DrawApp
 {
     abstract class Shape:Shapes
     {
-        location location = new location();
+        protected int x, y;
 
         public Shape()
         {
-            location.x = location.y = 100;
+            x = y = 100;
         }
 
         public Shape(int x, int y)
         {
-            location.x = x;
-            location.y = y;
+            this.x = x;
+            this.y = y;
 
         }
 
@@ -29,8 +29,8 @@ namespace DrawApp
      
         public virtual void set(params int[] list)
         {
-            location.x = list[0];
-            location.y = list[1];
+            x = list[0];
+            y = list[1];
         }
     }
 }
