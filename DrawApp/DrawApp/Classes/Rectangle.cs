@@ -11,8 +11,7 @@ namespace DrawApp
     class Rectangle : Shape
     {
         int width, height;
-        location location = new location();
-
+        
         public Rectangle() : base()
         {
             width = 100; // default
@@ -20,7 +19,6 @@ namespace DrawApp
         }
         public Rectangle(int x, int y, int width, int height) : base(x, y)
         {
-
             this.width = width;
             this.height = height;
         }
@@ -36,7 +34,7 @@ namespace DrawApp
         public override void draw(Graphics g)
         {
             Pen p = new Pen(Color.Black, 2);
-            g.DrawRectangle(p, location.x, location.y, width, height);
+            g.DrawRectangle(p, x, y, width, height);
         }
     }
 }

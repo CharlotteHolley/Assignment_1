@@ -10,8 +10,7 @@ namespace DrawApp
 {
     class Circle : Shape
     {
-        int radius;
-        location location = new location();
+        int radius; 
 
         public Circle() : base()
         {
@@ -35,7 +34,7 @@ namespace DrawApp
         {
 
             Pen p = new Pen(Color.Black, 2);
-            g.DrawEllipse(p, location.x, location.y, radius * 2, radius * 2);
+            g.DrawEllipse(p, x, y, radius * 2, radius * 2);
 
         }
     }

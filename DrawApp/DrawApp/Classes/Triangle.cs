@@ -17,11 +17,8 @@ namespace DrawApp
             new Point { X = 0, Y = 0}
         };
 
-        location location = new location();
-
         public Triangle() : base()
         {
-            
         }
         public Triangle(int x, int y, int x1, int y1, int x2, int y2) : base(x, y)
         {
@@ -38,17 +35,22 @@ namespace DrawApp
 
         public override void set(params int[] list)
         {
-            base.set(list[0] /* x */, list[1] /* y */);
-            base.set(list[2] /* x */, list[3] /* y */);
-            base.set(list[4] /* x */, list[5] /* y */);
+
+            TriPoints[0].X = list[0];
+            TriPoints[0].Y = list[1];
+            TriPoints[1].X = list[2];
+            TriPoints[1].Y = list[3];
+            TriPoints[2].X = list[4];
+            TriPoints[2].Y = list[5];
+
         }
 
         public override void draw(Graphics g)
         {
 
             Pen pen = new Pen(Color.Black, 2);
+
             g.DrawPolygon(pen, TriPoints);
         }
     }
-}
 }
