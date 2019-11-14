@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.757
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DrawApp", "DrawApp\DrawApp.csproj", "{C94BFDC8-37B7-4A81-80A8-D99A0D1E857C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DrawAppTests", "DrawAppTests\DrawAppTests.csproj", "{A44B2BB3-E535-4B78-836A-1F57EF74B286}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C94BFDC8-37B7-4A81-80A8-D99A0D1E857C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C94BFDC8-37B7-4A81-80A8-D99A0D1E857C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C94BFDC8-37B7-4A81-80A8-D99A0D1E857C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C94BFDC8-37B7-4A81-80A8-D99A0D1E857C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A44B2BB3-E535-4B78-836A-1F57EF74B286}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A44B2BB3-E535-4B78-836A-1F57EF74B286}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A44B2BB3-E535-4B78-836A-1F57EF74B286}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A44B2BB3-E535-4B78-836A-1F57EF74B286}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {07FDA595-7C6A-4BD1-BA81-266B0FDCAA9C}
+	EndGlobalSection
+EndGlobal
