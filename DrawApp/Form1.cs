@@ -1,4 +1,5 @@
 ﻿using Assignment_1;
+using DrawApp.Model;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,6 +18,7 @@ namespace DrawApp
         private Random rnd = new Random();
         Graphics g;
         location location = new location();
+        List<Variable> listVariable = new List<Variable>();
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -41,6 +43,8 @@ namespace DrawApp
         {
             g.Clear(Color.Transparent);
             commandBox.Clear();
+            listVariable.Clear();
+            
             Refresh();
         }
         
@@ -49,7 +53,9 @@ namespace DrawApp
             location.x = 0;
             location.y = 0;
         }
-        public void submit()
+
+        
+    public void submit()
         {
              if (textCommand.Text.ToLower() == "run")
             {
@@ -122,28 +128,68 @@ namespace DrawApp
 
             return saveRead;
         }
-
+        
         private Graphics ShapeCommand(String[] scaleCmds)
         {
             callShape Call = new callShape(); // inherits from the classes through the callshape class
             Shape s;
+            bool bHeigthIsVariable = false;
+            int height = 0;
+            int width = 0;
+            int radius = 0;
+
+            if (scaleCmds[0] == "var")
+            {
+                string variable = scaleCmds[1].Trim();
+                int value = Convert.ToInt16(scaleCmds[2].Trim());
+
+                //System.Diagnostics.Debug.WriteLine(variable + value);
+                Variable var = new Variable();
+
+                var.VariableName = variable;
+                var.VariableValue = value;
+
+                listVariable.Add(var);
+
+            }
+
+            foreach (var variable in listVariable)
+            {
+                if (scaleCmds[1].Trim() == variable.VariableName)
+                {
+                    bHeigthIsVariable = true;
+                }
+            }
+            if (bHeigthIsVariable)
+            {
+                Variable variable = listVariable.Where(w => w.VariableName == scaleCmds[1]).FirstOrDefault();
+                height = variable.VariableValue;
+                width = variable.VariableValue;
+                radius = width = variable.VariableValue;
+            }
+            else
+            {
+                height = Convert.ToInt16(scaleCmds[1].Trim());
+                width = Convert.ToInt16(scaleCmds[2].Trim());
+                radius = Convert.ToInt16(scaleCmds[1].Trim());
+            }
 
             if (scaleCmds[0] == "rectangle")
             {
                 s = Call.getShape("RECTANGLE");
-                s.set(location.x, location.y, Convert.ToInt16(scaleCmds[1].Trim()) /* width */, Convert.ToInt16(scaleCmds[2].Trim())/* height */);
+                s.set(location.x, location.y, width, height);
                 s.draw(g);
             }
             else if(scaleCmds[0] == "circle")
             {
                 s = Call.getShape("CIRCLE");
-                s.set(location.x, location.y, Convert.ToInt16(scaleCmds[1].Trim()) /* radius */);
+                s.set(location.x, location.y, radius);
                 s.draw(g);
             }
             else if (scaleCmds[0] == "square")
             {
                 s = Call.getShape("SQUARE");
-                s.set(location.x, location.y, Convert.ToInt16(scaleCmds[1].Trim()) /* width */, Convert.ToInt16(scaleCmds[2].Trim())/* height */);
+                s.set(location.x, location.y, width, height);
                 s.draw(g);
             }
             else if (scaleCmds[0] == "triangle")
@@ -183,7 +229,7 @@ namespace DrawApp
             {
                 commandBox.Text = LoadFile();
             }
-
+            
             else {
                 MessageBox.Show("Please type in a valid input", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -219,6 +265,11 @@ namespace DrawApp
         private void loadToolStripMenuItem_Click(object sender, EventArgs e)
         {
             commandBox.Text = LoadFile();
+        }
+
+        private void commandBox_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 
