@@ -20,6 +20,7 @@ namespace DrawApp
         location location = new location();
         List<Variable> listVariable = new List<Variable>();
         Dictionary<string, int> varMap = new Dictionary<string, int>();
+        bool doIf = true;
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -60,6 +61,13 @@ namespace DrawApp
         {
              if (textCommand.Text.ToLower() == "run")
             {
+                //int loopStart = 0;
+                //for(int i = 0; i < commandBox.Lines.Length; i++)
+                //{
+                //    String line = commandBox.Lines.ElementAt(i);
+                //    String[] scaleCmds = line.ToLower().Split(','); // splits lines when , is used
+                //    g = ShapeCommand(scaleCmds);
+                //}
                 foreach (var line in commandBox.Lines) // runs each line of the Command Box through the Text Command textbox
                 {
                     String[] scaleCmds = line.ToLower().Split(','); // splits lines when , is used
@@ -136,6 +144,14 @@ namespace DrawApp
             {
                 str.Trim();
             }
+            if (!doIf)
+            {
+                if (scaleCmds[0] != "endif")
+                {
+                    doIf = true;
+                }
+                return g;
+            }
             callShape Call = new callShape(); // inherits from the classes through the callshape class
             Shape s;
             bool bHeigthIsVariable = false;
@@ -146,33 +162,86 @@ namespace DrawApp
             if (scaleCmds[0] == "var")
             {
                 string variable = scaleCmds[1];
-                int value = Convert.ToInt16(scaleCmds[2]);
+                if (scaleCmds[2].StartsWith("++"))
+                {
+                    try
+                    {
+                        varMap.Add(variable, 1);
+                    }
+                    catch (Exception e)
+                    {
+                        varMap[variable] += 1;
+                    }
+                }
+                else if (scaleCmds[2].StartsWith("--"))
+                {
+                    try
+                    {
+                        varMap.Add(variable, -1);
+                    }
+                    catch (Exception e)
+                    {
+                        varMap[variable] -= 1;
+                    }
+                }
+                else if (scaleCmds[2].StartsWith("+"))
+                {
+                    int val = Convert.ToInt16(scaleCmds[2].Substring(1));
+                    try
+                    {
+                        varMap.Add(variable, val);
+                    }
+                    catch (Exception e)
+                    {
+                        varMap[variable] += val;
+                    }
+                }
+                else if (scaleCmds[2].StartsWith("-"))
+                {
+                    int val = Convert.ToInt16(scaleCmds[2].Substring(1));
+                    try
+                    {
+                        varMap.Add(variable, -val);
+                    }
+                    catch (Exception e)
+                    {
+                        varMap[variable] -= val;
+                    }
+                }
+                else
+                {
+                    int value = Convert.ToInt16(scaleCmds[2]);
+
+                    try
+                    {
+                        varMap.Add(variable, value);
+                    }
+                    catch (Exception e)
+                    {
+                        varMap[variable] = value;
+                    }
+                }
                 
-                try
-                {
-                    varMap.Add(variable, value);
-                }
-                catch (Exception e)
-                {
-                    varMap[variable] = value;
-                }
 
             }
+
             string key = "";
-            foreach (var pair in varMap)
+            if (scaleCmds.Length > 1)
             {
-                key = pair.Key;
-                int value = pair.Value;
-
-                if (scaleCmds[1] == key)
+                foreach (var pair in varMap)
                 {
-                    bHeigthIsVariable = true;
+                    key = pair.Key;
+                    int value = pair.Value;
+
+                    if (scaleCmds[1] == key)
+                    {
+                        bHeigthIsVariable = true;
+                    }
                 }
             }
+            
             if (bHeigthIsVariable)
             {
-                //Variable variable = listVariable.Where(w => w.VariableName == scaleCmds[1]).FirstOrDefault();
-                
                 int value = varMap[key];
                 height = value;
                 width = value;
@@ -254,6 +323,82 @@ namespace DrawApp
             else if (scaleCmds[0] == "load")
             {
                 commandBox.Text = LoadFile();
+            }
+            else if(scaleCmds[0].StartsWith("if("))
+            {
+                
+                int queryLen = scaleCmds[0].Length - 4;
+                string query = scaleCmds[0].Substring(3, queryLen); //Isolates from if(query) to query
+                //Check if comparitor is ==
+                int eq = query.IndexOf("==");
+                int neq = query.IndexOf("!=");
+                Console.WriteLine(query);
+                Console.WriteLine("eq = " + eq);
+                Console.WriteLine("neq = " + neq);
+                int compPos = (eq != -1 ? eq : neq); //Sets the comparitor position to which symbol is found
+                bool comparitor = (eq != -1);
+                string lhs = query.Substring(0, compPos);
+                string rhs = query.Substring(compPos + 2);
+                Console.WriteLine("lhs = " + lhs);
+                Console.WriteLine("rhs = " + rhs);
+                //Check if lhs is a variable
+                int lhsComp = 0;
+                int rhsComp = 0;
+                try
+                {
+                    lhsComp = varMap[lhs];
+                }
+                catch
+                {
+                    try
+                    {
+                        lhsComp = Convert.ToInt16(lhs);
+                    }
+                    catch
+                    {
+                        lhsComp = 0;
+                    }
+                }
+                //Check if rhs is a variable
+                try
+                {
+                    rhsComp = varMap[rhs];
+                }
+                catch
+                {
+                    try
+                    {
+                        rhsComp = Convert.ToInt16(rhs);
+                    }
+                    catch
+                    {
+                        rhsComp = 0;
+                    }
+                }
+                Console.WriteLine("lhs val = " + lhsComp);
+                Console.WriteLine("rhs val = " + rhsComp);
+                if (comparitor)
+                {
+                    if (lhsComp == rhsComp)
+                    {
+                        doIf = true;
+                    }
+                    else
+                    {
+                        doIf = false;
+                    }
+                }
+                else
+                {
+                    if (lhsComp != rhsComp)
+                    {
+                        doIf = true;
+                    }
+                    else
+                    {
+                        doIf = false;
+                    }
+                }
             }
             return g;
         }
