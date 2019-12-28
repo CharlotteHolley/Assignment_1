@@ -19,6 +19,7 @@ namespace DrawApp
         Graphics g;
         location location = new location();
         List<Variable> listVariable = new List<Variable>();
+        Dictionary<string, int> varMap = new Dictionary<string, int>();
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -44,7 +45,7 @@ namespace DrawApp
             g.Clear(Color.Transparent);
             commandBox.Clear();
             listVariable.Clear();
-            
+            varMap.Clear();
             Refresh();
         }
         
@@ -142,56 +143,60 @@ namespace DrawApp
             int width = 0;
             //int radius = 0;
 
-            try
-            {
-                String test = scaleCmds[1];
-            }
-            catch(Exception e)
-            {
-                return g;
-            }
-
             if (scaleCmds[0] == "var")
             {
                 string variable = scaleCmds[1];
                 int value = Convert.ToInt16(scaleCmds[2]);
                 
-
-                //System.Diagnostics.Debug.WriteLine(variable + value);
-                Variable var = new Variable();
-
-                var.VariableName = variable;
-                var.VariableValue = value;
-
-                listVariable.Add(var);
+                try
+                {
+                    varMap.Add(variable, value);
+                }
+                catch (Exception e)
+                {
+                    varMap[variable] = value;
+                }
 
             }
-
-            foreach (var variable in listVariable)
+            string key = "";
+            foreach (var pair in varMap)
             {
-                if (scaleCmds[1] == variable.VariableName)
+                key = pair.Key;
+                int value = pair.Value;
+
+                if (scaleCmds[1] == key)
                 {
                     bHeigthIsVariable = true;
                 }
             }
             if (bHeigthIsVariable)
             {
-                Variable variable = listVariable.Where(w => w.VariableName == scaleCmds[1]).FirstOrDefault();
-                height = variable.VariableValue;
-                width = variable.VariableValue;
+                //Variable variable = listVariable.Where(w => w.VariableName == scaleCmds[1]).FirstOrDefault();
+                
+                int value = varMap[key];
+                height = value;
+                width = value;
             }
             else
             {
-                width = Convert.ToInt16(scaleCmds[1]);
-                
                 try
                 {
-                    height = Convert.ToInt16(scaleCmds[2]);
+                    width = Convert.ToInt16(scaleCmds[1]);
+                    try
+                    {
+                        height = Convert.ToInt16(scaleCmds[2]);
+                    }
+                    catch (Exception e)
+                    {
+                        height = width;
+                    }
                 }
                 catch (Exception e)
                 {
-                    height = width;
+                    width = -1;
+                    height = -1;
                 }
+                
                 
             }
 
