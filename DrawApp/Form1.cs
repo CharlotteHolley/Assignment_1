@@ -61,19 +61,47 @@ namespace DrawApp
         {
              if (textCommand.Text.ToLower() == "run")
             {
-                //int loopStart = 0;
-                //for(int i = 0; i < commandBox.Lines.Length; i++)
-                //{
-                //    String line = commandBox.Lines.ElementAt(i);
-                //    String[] scaleCmds = line.ToLower().Split(','); // splits lines when , is used
-                //    g = ShapeCommand(scaleCmds);
-                //}
-                foreach (var line in commandBox.Lines) // runs each line of the Command Box through the Text Command textbox
+                int loopStart = 0;
+                bool doLoop = true;
+                for(int i = 0; i < commandBox.Lines.Length; i++)
                 {
+                    String line = commandBox.Lines.ElementAt(i);
                     String[] scaleCmds = line.ToLower().Split(','); // splits lines when , is used
-                    g = ShapeCommand(scaleCmds);
-
+                    if (scaleCmds[0].StartsWith("loop"))
+                    {
+                        
+                        int queryLen = scaleCmds[0].Length - 6;
+                        string query = scaleCmds[0].Substring(5, queryLen); //Isolates from loop(query) to query
+                        doLoop = queryString(query);
+                        if (doLoop)
+                        {
+                            loopStart = i-1;
+                        }
+                        Console.WriteLine(doLoop);
+                    }
+                    if (scaleCmds[0].StartsWith("end"))
+                    {
+                        if (doLoop)
+                        {
+                            i = loopStart;
+                        }
+                        else
+                        {
+                            doLoop = true;
+                        }
+                    }
+                    if (doLoop)
+                    {
+                        g = ShapeCommand(scaleCmds);
+                    }
+                    
                 }
+                //foreach (var line in commandBox.Lines) // runs each line of the Command Box through the Text Command textbox
+                //{
+                //    String[] scaleCmds = line.ToLower().Split(','); // splits lines when , is used
+                 //   g = ShapeCommand(scaleCmds);
+
+               // }
             }
             else
             {
@@ -326,81 +354,79 @@ namespace DrawApp
             }
             else if(scaleCmds[0].StartsWith("if("))
             {
-                
                 int queryLen = scaleCmds[0].Length - 4;
                 string query = scaleCmds[0].Substring(3, queryLen); //Isolates from if(query) to query
-                //Check if comparitor is ==
-                int eq = query.IndexOf("==");
-                int neq = query.IndexOf("!=");
-                Console.WriteLine(query);
-                Console.WriteLine("eq = " + eq);
-                Console.WriteLine("neq = " + neq);
-                int compPos = (eq != -1 ? eq : neq); //Sets the comparitor position to which symbol is found
-                bool comparitor = (eq != -1);
-                string lhs = query.Substring(0, compPos);
-                string rhs = query.Substring(compPos + 2);
-                Console.WriteLine("lhs = " + lhs);
-                Console.WriteLine("rhs = " + rhs);
-                //Check if lhs is a variable
-                int lhsComp = 0;
-                int rhsComp = 0;
+                doIf = queryString(query);
+                
+            }
+            return g;
+        }
+        private bool queryString(string query)
+        {
+            int eq = query.IndexOf("==");
+            int neq = query.IndexOf("!=");
+            int compPos = (eq != -1 ? eq : neq); //Sets the comparitor position to which symbol is found
+            bool comparitor = (eq != -1);
+            string lhs = query.Substring(0, compPos);
+            string rhs = query.Substring(compPos + 2);
+            Console.WriteLine("lhs = " + lhs);
+            Console.WriteLine("rhs = " + rhs);
+            //Check if lhs is a variable
+            int lhsComp = 0;
+            int rhsComp = 0;
+            try
+            {
+                lhsComp = varMap[lhs];
+            }
+            catch
+            {
                 try
                 {
-                    lhsComp = varMap[lhs];
+                    lhsComp = Convert.ToInt16(lhs);
                 }
                 catch
                 {
-                    try
-                    {
-                        lhsComp = Convert.ToInt16(lhs);
-                    }
-                    catch
-                    {
-                        lhsComp = 0;
-                    }
+                    lhsComp = 0;
                 }
-                //Check if rhs is a variable
+            }
+            //Check if rhs is a variable
+            try
+            {
+                rhsComp = varMap[rhs];
+            }
+            catch
+            {
                 try
                 {
-                    rhsComp = varMap[rhs];
+                    rhsComp = Convert.ToInt16(rhs);
                 }
                 catch
                 {
-                    try
-                    {
-                        rhsComp = Convert.ToInt16(rhs);
-                    }
-                    catch
-                    {
-                        rhsComp = 0;
-                    }
+                    rhsComp = 0;
                 }
-                Console.WriteLine("lhs val = " + lhsComp);
-                Console.WriteLine("rhs val = " + rhsComp);
-                if (comparitor)
+            }
+            if (comparitor)
+            {
+                if (lhsComp == rhsComp)
                 {
-                    if (lhsComp == rhsComp)
-                    {
-                        doIf = true;
-                    }
-                    else
-                    {
-                        doIf = false;
-                    }
+                    return true;
                 }
                 else
                 {
-                    if (lhsComp != rhsComp)
-                    {
-                        doIf = true;
-                    }
-                    else
-                    {
-                        doIf = false;
-                    }
+                    return false;
                 }
             }
-            return g;
+            else
+            {
+                if (lhsComp != rhsComp)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
         }
 
         private void textCommand_KeyDown(object sender, KeyEventArgs e)
