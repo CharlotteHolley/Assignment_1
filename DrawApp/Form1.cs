@@ -165,13 +165,20 @@ namespace DrawApp
                 Variable variable = listVariable.Where(w => w.VariableName == scaleCmds[1]).FirstOrDefault();
                 height = variable.VariableValue;
                 width = variable.VariableValue;
-                radius = width = variable.VariableValue;
             }
             else
             {
                 height = Convert.ToInt16(scaleCmds[1].Trim());
-                width = Convert.ToInt16(scaleCmds[2].Trim());
-                radius = Convert.ToInt16(scaleCmds[1].Trim());
+                
+                try
+                {
+                    width = Convert.ToInt16(scaleCmds[2].Trim());
+                }
+                catch (Exception e)
+                {
+                    width = -1;
+                }
+                
             }
 
             if (scaleCmds[0] == "rectangle")
@@ -183,7 +190,7 @@ namespace DrawApp
             else if(scaleCmds[0] == "circle")
             {
                 s = Call.getShape("CIRCLE");
-                s.set(location.x, location.y, radius);
+                s.set(location.x, location.y, height /*radius */);
                 s.draw(g);
             }
             else if (scaleCmds[0] == "square")

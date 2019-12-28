@@ -18,3 +18,13 @@ C:\Users\CRAHo\Desktop\DrawApp\DrawApp\bin\Debug\DrawApp.exe
 C:\Users\CRAHo\Desktop\DrawApp\DrawApp\bin\Debug\DrawApp.pdb
 C:\Users\CRAHo\Desktop\DrawApp\DrawApp\obj\Debug\DrawApp.exe
 C:\Users\CRAHo\Desktop\DrawApp\DrawApp\obj\Debug\DrawApp.pdb
+C:\Users\CRAHo\Desktop\University - Software Engineering\DrawApp\DrawApp\bin\Debug\DrawApp.exe.config
+C:\Users\CRAHo\Desktop\University - Software Engineering\DrawApp\DrawApp\bin\Debug\DrawApp.exe
+C:\Users\CRAHo\Desktop\University - Software Engineering\DrawApp\DrawApp\bin\Debug\DrawApp.pdb
+C:\Users\CRAHo\Desktop\University - Software Engineering\DrawApp\DrawApp\obj\Debug\DrawApp.csprojAssemblyReference.cache
+C:\Users\CRAHo\Desktop\University - Software Engineering\DrawApp\DrawApp\obj\Debug\DrawApp.Form1.resources
+C:\Users\CRAHo\Desktop\University - Software Engineering\DrawApp\DrawApp\obj\Debug\DrawApp.Properties.Resources.resources
+C:\Users\CRAHo\Desktop\University - Software Engineering\DrawApp\DrawApp\obj\Debug\DrawApp.csproj.GenerateResource.cache
+C:\Users\CRAHo\Desktop\University - Software Engineering\DrawApp\DrawApp\obj\Debug\DrawApp.csproj.CoreCompileInputs.cache
+C:\Users\CRAHo\Desktop\University - Software Engineering\DrawApp\DrawApp\obj\Debug\DrawApp.exe
+C:\Users\CRAHo\Desktop\University - Software Engineering\DrawApp\DrawApp\obj\Debug\DrawApp.pdb
