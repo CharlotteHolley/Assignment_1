@@ -131,17 +131,31 @@ namespace DrawApp
         
         private Graphics ShapeCommand(String[] scaleCmds)
         {
+            foreach (var str in scaleCmds)
+            {
+                str.Trim();
+            }
             callShape Call = new callShape(); // inherits from the classes through the callshape class
             Shape s;
             bool bHeigthIsVariable = false;
             int height = 0;
             int width = 0;
-            int radius = 0;
+            //int radius = 0;
+
+            try
+            {
+                String test = scaleCmds[1];
+            }
+            catch(Exception e)
+            {
+                return g;
+            }
 
             if (scaleCmds[0] == "var")
             {
-                string variable = scaleCmds[1].Trim();
-                int value = Convert.ToInt16(scaleCmds[2].Trim());
+                string variable = scaleCmds[1];
+                int value = Convert.ToInt16(scaleCmds[2]);
+                
 
                 //System.Diagnostics.Debug.WriteLine(variable + value);
                 Variable var = new Variable();
@@ -155,7 +169,7 @@ namespace DrawApp
 
             foreach (var variable in listVariable)
             {
-                if (scaleCmds[1].Trim() == variable.VariableName)
+                if (scaleCmds[1] == variable.VariableName)
                 {
                     bHeigthIsVariable = true;
                 }
@@ -168,15 +182,15 @@ namespace DrawApp
             }
             else
             {
-                height = Convert.ToInt16(scaleCmds[1].Trim());
+                width = Convert.ToInt16(scaleCmds[1]);
                 
                 try
                 {
-                    width = Convert.ToInt16(scaleCmds[2].Trim());
+                    height = Convert.ToInt16(scaleCmds[2]);
                 }
                 catch (Exception e)
                 {
-                    width = -1;
+                    height = width;
                 }
                 
             }
@@ -202,23 +216,23 @@ namespace DrawApp
             else if (scaleCmds[0] == "triangle")
             {
                 s = Call.getShape("TRIANGLE");
-                s.set(location.x, location.y, Convert.ToInt16(scaleCmds[1].Trim()) /* x */, Convert.ToInt16(scaleCmds[2].Trim())/* y */,
-                    Convert.ToInt16(scaleCmds[3].Trim())/* x */, Convert.ToInt16(scaleCmds[4].Trim())/* y */);
+                s.set(location.x, location.y, Convert.ToInt16(scaleCmds[1]) /* x */, Convert.ToInt16(scaleCmds[2])/* y */,
+                    Convert.ToInt16(scaleCmds[3])/* x */, Convert.ToInt16(scaleCmds[4])/* y */);
                 s.draw(g);
             }
             else if (scaleCmds[0] == "drawto")
             {
                 Pen pen = new Pen(Color.Black, 2);
                 g.DrawLine(pen, location.x, location.y, /* Gets locations from location.cs */
-                    Convert.ToInt16(scaleCmds[1].Trim()), Convert.ToInt16(scaleCmds[2].Trim()));
+                    Convert.ToInt16(scaleCmds[1]), Convert.ToInt16(scaleCmds[2]));
 
-                location.x = Convert.ToInt16(scaleCmds[1].Trim()); // sets new locations, x and y
-                location.y = Convert.ToInt16(scaleCmds[2].Trim());
+                location.x = Convert.ToInt16(scaleCmds[1]); // sets new locations, x and y
+                location.y = Convert.ToInt16(scaleCmds[2]);
             }
             else if (scaleCmds[0] == "moveto")
             {
-                location.x = Convert.ToInt16(scaleCmds[1].Trim()); // sets new x and y
-                location.y = Convert.ToInt16(scaleCmds[2].Trim());
+                location.x = Convert.ToInt16(scaleCmds[1]); // sets new x and y
+                location.y = Convert.ToInt16(scaleCmds[2]);
             }
             else if (scaleCmds[0] == "clear")
             {
@@ -235,10 +249,6 @@ namespace DrawApp
             else if (scaleCmds[0] == "load")
             {
                 commandBox.Text = LoadFile();
-            }
-            
-            else {
-                MessageBox.Show("Please type in a valid input", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             return g;
         }
