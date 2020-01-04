@@ -18,9 +18,9 @@ namespace DrawApp
         private Random rnd = new Random();
         Graphics g;
         location location = new location();
-        List<Variable> listVariable = new List<Variable>();
-        Dictionary<string, int> varMap = new Dictionary<string, int>();
-        bool doIf = true;
+        List<Variable> listVariable = new List<Variable>(); //Variable list
+        Dictionary<string, int> varMap = new Dictionary<string, int>(); // Variable map
+        bool doIf = true; //if function
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -52,7 +52,7 @@ namespace DrawApp
         
         public void reset()
         {
-            location.x = 0;
+            location.x = 0; // sets location to 0
             location.y = 0;
         }
 
@@ -62,35 +62,52 @@ namespace DrawApp
              if (textCommand.Text.ToLower() == "run")
             {
                 int loopStart = 0;
+                bool loopEntered = false;
                 bool doLoop = true;
                 for(int i = 0; i < commandBox.Lines.Length; i++)
                 {
                     String line = commandBox.Lines.ElementAt(i);
                     String[] scaleCmds = line.ToLower().Split(','); // splits lines when , is used
-                    if (scaleCmds[0].StartsWith("loop"))
+                    if (scaleCmds[0].StartsWith("loop")) 
                     {
                         
-                        int queryLen = scaleCmds[0].Length - 6;
-                        string query = scaleCmds[0].Substring(5, queryLen); //Isolates from loop(query) to query
+                        int queryLen = scaleCmds[0].Length - 6; 
+                        string query = scaleCmds[0].Substring(5, queryLen); // Isolates from loop(query) to query
                         doLoop = queryString(query);
                         if (doLoop)
                         {
-                            loopStart = i-1;
+                            loopStart = i-1; // Sets the position of the loop start to just before the comparison, so that when the loop continues, 
+                            // it increases the counter by 1, setting the line read to the for() line
                         }
                         Console.WriteLine(doLoop);
                     }
-                    if (scaleCmds[0].StartsWith("end"))
+                    else if (scaleCmds[0].StartsWith("if("))
                     {
-                        if (doLoop)
+                        int queryLen = scaleCmds[0].Length - 4;
+                        string query = scaleCmds[0].Substring(3, queryLen); // Isolates from if(query) to query
+                        doIf = queryString(query);
+
+                    }
+                    if (scaleCmds[0] == "end") // Checking to see if end of loop
+                    {
+                        if (doLoop) // if in loop already 
                         {
-                            i = loopStart;
+                            i = loopStart; // go to the start of the loop (comparison)
                         }
                         else
                         {
-                            doLoop = true;
+                            doLoop = true; // continue otherwise
                         }
                     }
-                    if (doLoop)
+                    if (!doIf) // check to see if contents of if statement are being ignored
+                    {
+                        if (scaleCmds[0] != "endif") // when you read the end of the if statement
+                        {
+                            doIf = true; // continue looking at lines again
+                        }
+                    }
+                    if (doLoop && doIf) // only execute the lines when you are looking at the line in a 
+                        //passed if / loop statement, or normal ine
                     {
                         g = ShapeCommand(scaleCmds);
                     }
@@ -105,7 +122,7 @@ namespace DrawApp
             }
             else
             {
-                String[] scaleCmds = textCommand.Text.ToLower().Split(',');
+                String[] scaleCmds = textCommand.Text.ToLower().Split(','); // multi line commands in text area
                 g = ShapeCommand(scaleCmds);
             }
 
@@ -146,11 +163,11 @@ namespace DrawApp
                         string lines = sr.ReadLine();
                         if (lines == null)
                         {
-                            break;
+                            break; // does not pull through information
                         }
                         else
                         {
-                            saveRead += lines + Environment.NewLine;
+                            saveRead += lines + Environment.NewLine; //reads each line
                         }
            
                     }
@@ -159,7 +176,7 @@ namespace DrawApp
             }
             catch (IOException e)
             {
-                Console.WriteLine("The file could not be read:");
+                Console.WriteLine("The file could not be read:"); // console output if file input is not valid
                 Console.WriteLine(e.Message);
             }
 
@@ -172,17 +189,10 @@ namespace DrawApp
             {
                 str.Trim();
             }
-            if (!doIf)
-            {
-                if (scaleCmds[0] != "endif")
-                {
-                    doIf = true;
-                }
-                return g;
-            }
+            
             callShape Call = new callShape(); // inherits from the classes through the callshape class
             Shape s;
-            bool bHeigthIsVariable = false;
+            bool bHeightIsVariable = false;
             int height = 0;
             int width = 0;
             //int radius = 0;
@@ -190,7 +200,7 @@ namespace DrawApp
             if (scaleCmds[0] == "var")
             {
                 string variable = scaleCmds[1];
-                if (scaleCmds[2].StartsWith("++"))
+                if (scaleCmds[2].StartsWith("++")) // Allows you to add 1 to current value
                 {
                     try
                     {
@@ -201,7 +211,7 @@ namespace DrawApp
                         varMap[variable] += 1;
                     }
                 }
-                else if (scaleCmds[2].StartsWith("--"))
+                else if (scaleCmds[2].StartsWith("--")) // Allows you to minus 1 to current value
                 {
                     try
                     {
@@ -212,9 +222,9 @@ namespace DrawApp
                         varMap[variable] -= 1;
                     }
                 }
-                else if (scaleCmds[2].StartsWith("+"))
+                else if (scaleCmds[2].StartsWith("+")) // Allows you to add to current value (Variable)
                 {
-                    int val = Convert.ToInt16(scaleCmds[2].Substring(1));
+                    int val = Convert.ToInt16(scaleCmds[2].Substring(1)); // stores value to be added
                     try
                     {
                         varMap.Add(variable, val);
@@ -224,9 +234,9 @@ namespace DrawApp
                         varMap[variable] += val;
                     }
                 }
-                else if (scaleCmds[2].StartsWith("-"))
+                else if (scaleCmds[2].StartsWith("-")) // Allows you to minus to current value (Variable)
                 {
-                    int val = Convert.ToInt16(scaleCmds[2].Substring(1));
+                    int val = Convert.ToInt16(scaleCmds[2].Substring(1)); // stores value to be subtracted
                     try
                     {
                         varMap.Add(variable, -val);
@@ -242,7 +252,7 @@ namespace DrawApp
 
                     try
                     {
-                        varMap.Add(variable, value);
+                        varMap.Add(variable, value); // stores the variable name and the value associated with it
                     }
                     catch (Exception e)
                     {
@@ -253,26 +263,26 @@ namespace DrawApp
 
             }
 
-            string key = "";
-            if (scaleCmds.Length > 1)
+            string key = ""; // default value is empty, value needs to be populated
+            if (scaleCmds.Length > 1) 
             {
-                foreach (var pair in varMap)
+                foreach (var pair in varMap) 
                 {
                     key = pair.Key;
                     int value = pair.Value;
 
                     if (scaleCmds[1] == key)
                     {
-                        bHeigthIsVariable = true;
+                        bHeightIsVariable = true;
                     }
                 }
             }
             
-            if (bHeigthIsVariable)
+            if (bHeightIsVariable)
             {
-                int value = varMap[key];
-                height = value;
-                width = value;
+                int value = varMap[key]; // gets values from the map key
+                height = value; // stores value for height
+                width = value; // stores value for left
             }
             else
             {
@@ -281,22 +291,22 @@ namespace DrawApp
                     width = Convert.ToInt16(scaleCmds[1]);
                     try
                     {
-                        height = Convert.ToInt16(scaleCmds[2]);
+                        height = Convert.ToInt16(scaleCmds[2]); // stores value if it is inputted
                     }
                     catch (Exception e)
                     {
-                        height = width;
+                        height = width; // if a 2nd value that is required isn't entered, the width is set to the same as the height
                     }
                 }
                 catch (Exception e)
                 {
-                    width = -1;
+                    width = -1; // if no value is set, it is ignored and command wont run, stops crashing
                     height = -1;
                 }
                 
                 
             }
-
+            // Below calls from factory class (view classes folder) - inheritance
             if (scaleCmds[0] == "rectangle")
             {
                 s = Call.getShape("RECTANGLE");
@@ -352,62 +362,56 @@ namespace DrawApp
             {
                 commandBox.Text = LoadFile();
             }
-            else if(scaleCmds[0].StartsWith("if("))
-            {
-                int queryLen = scaleCmds[0].Length - 4;
-                string query = scaleCmds[0].Substring(3, queryLen); //Isolates from if(query) to query
-                doIf = queryString(query);
-                
-            }
+            
             return g;
         }
-        private bool queryString(string query)
+        private bool queryString(string query) // if statement
         {
-            int eq = query.IndexOf("==");
-            int neq = query.IndexOf("!=");
+            int eq = query.IndexOf("=="); // equal to
+            int neq = query.IndexOf("!="); // not equal to
             int compPos = (eq != -1 ? eq : neq); //Sets the comparitor position to which symbol is found
-            bool comparitor = (eq != -1);
-            string lhs = query.Substring(0, compPos);
-            string rhs = query.Substring(compPos + 2);
-            Console.WriteLine("lhs = " + lhs);
-            Console.WriteLine("rhs = " + rhs);
+            bool comparitor = (eq != -1); 
+            string lhs = query.Substring(0, compPos);  // LEFT HAND SIDE
+            string rhs = query.Substring(compPos + 2); // RIGHT HAND SIDE
+            Console.WriteLine("lhs = " + lhs); // debugging
+            Console.WriteLine("rhs = " + rhs); // debugging
             //Check if lhs is a variable
-            int lhsComp = 0;
-            int rhsComp = 0;
-            try
+            int lhsComp = 0; // initial variable for the value used on the left hand side
+            int rhsComp = 0; // initial variable for the value used on the right hand side 
+            try // test to see if the left is a variable
             {
-                lhsComp = varMap[lhs];
+                lhsComp = varMap[lhs]; // will assign the intial value or the value stored as a variable if one exists
             }
             catch
             {
                 try
                 {
-                    lhsComp = Convert.ToInt16(lhs);
+                    lhsComp = Convert.ToInt16(lhs); //Set the value to number inserted
                 }
                 catch
                 {
-                    lhsComp = 0;
+                    lhsComp = 0; // default to 0 if not a number or saved variable
                 }
             }
             //Check if rhs is a variable
             try
             {
-                rhsComp = varMap[rhs];
+                rhsComp = varMap[rhs]; // will assign the intial value or the value stored as a variable if one exists
             }
             catch
             {
                 try
                 {
-                    rhsComp = Convert.ToInt16(rhs);
+                    rhsComp = Convert.ToInt16(rhs); // Set the value to number inserted
                 }
                 catch
                 {
-                    rhsComp = 0;
+                    rhsComp = 0; // default to 0 if not a number or saved variable
                 }
             }
-            if (comparitor)
+            if (comparitor) // Comparitor (boolean value) for if the test is == (TRUE) or != (FALSE)
             {
-                if (lhsComp == rhsComp)
+                if (lhsComp == rhsComp) // Using the == comparitor since true
                 {
                     return true;
                 }
@@ -418,7 +422,7 @@ namespace DrawApp
             }
             else
             {
-                if (lhsComp != rhsComp)
+                if (lhsComp != rhsComp) // using the != comparitor since false
                 {
                     return true;
                 }
@@ -431,7 +435,7 @@ namespace DrawApp
 
         private void textCommand_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Return) // triggers if enter key is pressed
+            if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Return) // triggers if enter key is used
             {
                 submit();
             }
